@@ -1,0 +1,37 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          rc.local
+# Required-Start:    $all
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: Run /etc/rc.local if it exist
+### END INIT INFO
+
+PIDFILE=/var/run/journey.pid
+JOURNEY=/root/journey-linux-arm/journey
+
+do_start() {
+  start-stop-daemon\
+    --start --background\
+    --pidfile "$PIDFILE"\
+    --make-pidfile\
+    --exec "$JOURNEY"
+}
+case "$1" in
+    start)
+	do_start
+        ;;
+    restart|reload|force-reload)
+        echo "Error: argument '$1' not supported" >&2
+        exit 3
+        ;;
+    stop|status)
+        start-stop-daemon --pidfile "$PIDFILE" --stop
+        exit 0
+        ;;
+    *)
+        echo "Usage: $0 start|stop" >&2
+        exit 3
+        ;;
+esac
